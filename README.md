@@ -1,1 +1,4 @@
-# RPG-Marker-MV-Plugins
+# RPG-Marker-MV-Plugins by jp_asty
+
+## License
+MIT
