@@ -23,6 +23,7 @@
  * @default 3
  *
  * @help
+ * v1.3.1 bigIntがセーブに正しく反映されていなかったのを修正。
  * v1.3.0 無量大数の指数桁が4増える度に下位の桁名が非表示になるように変更。
  * v1.2.0 9999無量大数を超える場合は指数表記になるように変更。
  * v1.1.0 DTextPictureのリアルタイム更新に対応, bigInt対応。
@@ -152,6 +153,20 @@
     _Game_Variables_setValue.call(this, variableId, value);
   };
 
+  Game_Variables.prototype.bigIntToString = function() {
+    for(let i=0; i<useVariableIds.length; i++) {
+      let id = useVariableIds[i];
+      this._data[id] = this._data[id].toString();
+    }
+  };
+
+  Game_Variables.prototype.parseBigInt = function() {
+    for(let i=0; i<useVariableIds.length; i++) {
+      let id = useVariableIds[i];
+      this._data[id] = bigInt(this._data[id]);
+    }
+  };
+
   //-----------------------------------------------------------------------------
   // Game_Interpreter
   //
@@ -187,6 +202,21 @@
     } else {
       _Game_Interpreter_operateVariable.call(this, variableId, operationType, value);
     }
+  };
+
+  //-----------------------------------------------------------------------------
+  // DataManager
+  //
+  const _DataManager_makeSaveContents = DataManager.makeSaveContents;
+  DataManager.makeSaveContents = function() {
+    $gameVariables.bigIntToString();
+    return _DataManager_makeSaveContents.call(this);
+  };
+
+  const _DataManager_extractSaveContents = DataManager.extractSaveContents;
+  DataManager.extractSaveContents = function(contents) {
+    _DataManager_extractSaveContents.call(this, contents);
+    $gameVariables.parseBigInt();
   };
 
   // DTextPictureのリアルタイム更新対応 ----------------------------------------
