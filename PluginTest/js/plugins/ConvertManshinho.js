@@ -212,7 +212,9 @@
   const _DataManager_makeSaveContents = DataManager.makeSaveContents;
   DataManager.makeSaveContents = function() {
     $gameVariables.bigIntToString();
-    return _DataManager_makeSaveContents.call(this);
+    const contents =  _DataManager_makeSaveContents.call(this);
+    $gameVariables.parseBigInt();
+    return contents;
   };
 
   const _DataManager_extractSaveContents = DataManager.extractSaveContents;
