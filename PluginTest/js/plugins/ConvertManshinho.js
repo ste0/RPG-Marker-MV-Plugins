@@ -23,8 +23,8 @@
  * @default 3
  *
  * @help
- * v1.3.2 bigIntの初期値が未設定のときセーブできなかったのを修正。
- * v1.3.1 bigIntがセーブに正しく反映されていなかったのを修正。
+ * v1.3.4 0が表示されなくなっていたのを修正。
+ * v1.3.3 セーブ処理修正。
  * v1.3.0 無量大数の指数桁が4増える度に下位の桁名が非表示になるように変更。
  * v1.2.0 9999無量大数を超える場合は指数表記になるように変更。
  * v1.1.0 DTextPictureのリアルタイム更新に対応, bigInt対応。
@@ -79,8 +79,8 @@
     }
     let outString = "";
     for(let i=0; i<div4List.length; i++) {
-      div4List[i] = trimStartZero(div4List[i]);
-      if(i > 0 && div4List[i].length == 0) continue;
+      div4List[i] = trimStartZero(div4List[i], i);
+      if(div4List[i].length == 0) continue;
       if(div4List[i].length > 4) {
         div4List[i] = getExponentialString(div4List[i], mtDigitNum);
         const eNum = div4List[i].substr(div4List[i].indexOf("e")+1);
@@ -101,13 +101,15 @@
     return str;
   };
 
-  const trimStartZero = function(str) {
+  const trimStartZero = function(str, i) {
     let zeroNum = 0;
     for(let i=0; i<str.length; i++) {
       if(str.charAt(i) != "0") break;
       zeroNum++;
     }
-    return str.substr(zeroNum);
+    str = str.substr(zeroNum);
+    if(i == 0 && str.length == 0) str = "0";
+    return str;
   };
 
   const getExponentialString = function(str, digit) {
