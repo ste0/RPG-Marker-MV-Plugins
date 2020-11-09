@@ -23,6 +23,7 @@
  * @default 3
  *
  * @help
+ * v1.3.2 bigIntの初期値が未設定のときセーブできなかったのを修正。
  * v1.3.1 bigIntがセーブに正しく反映されていなかったのを修正。
  * v1.3.0 無量大数の指数桁が4増える度に下位の桁名が非表示になるように変更。
  * v1.2.0 9999無量大数を超える場合は指数表記になるように変更。
@@ -156,6 +157,7 @@
   Game_Variables.prototype.bigIntToString = function() {
     for(let i=0; i<useVariableIds.length; i++) {
       let id = useVariableIds[i];
+      this._data[id] = this._data[id] || bigInt(0);
       this._data[id] = this._data[id].toString();
     }
   };
