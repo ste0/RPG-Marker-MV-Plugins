@@ -23,6 +23,7 @@
  * @default 3
  *
  * @help
+ * v1.4.0 条件分岐に対応。
  * v1.3.4 0が表示されなくなっていたのを修正。
  * v1.3.3 セーブ処理修正。
  * v1.3.0 無量大数の指数桁が4増える度に下位の桁名が非表示になるように変更。
@@ -51,6 +52,7 @@
  * ・大きい値を初期値にしたい場合は、スクリプトで例えばbigInt("123456789123456789")と記述して下さい。
  * ・スクリプトで計算式を記述する必要がある場合はhttps://www.npmjs.com/package/big-integerの記述に従って下さい。
  * ・例えば変数1に5を足す場合は$gameVariables.value(1).add(5) と書きます。
+ * ・条件分岐のスクリプト欄で比較を行う場合も上記urlの記述に従って下さい。
  * ------------------------------------------------------------
  * 利用規約
  * This plugin is released under the MIT License.
@@ -64,23 +66,25 @@
   const useVariableIds = JSON.parse(inParams['useVariableIds']).map(Number);
   const mtDigitNum = Number(inParams["mtDigitNum"]);
   const unitNames = ["","万","億","兆","京","垓","杼","穰","溝","澗","正","載","極","恒河沙","阿僧祇","那由他","不可思議","無量大数"];
+  const MT_DIGIT_LEN = 68;
 
   //-----------------------------------------------------------------------------
   // Function
   //
   const getManshinhoString = function(value, visibleUnitNum) {
-    if(visibleUnitNum == 0) visibleUnitNum = unitNames.length;
+    value = bigInt(value);
     let unsignedInString = value.abs().toString();
     unsignedInString = padStartZeroByMultiple4(unsignedInString);
     let div4List = [];
-    if(unsignedInString.length > 68) {
-      div4List.push(unsignedInString.substr(0, unsignedInString.length-68));
-      unsignedInString = unsignedInString.substr(unsignedInString.length-68);
+    if(unsignedInString.length > MT_DIGIT_LEN) {
+      div4List.push(unsignedInString.substr(0, unsignedInString.length - MT_DIGIT_LEN));
+      unsignedInString = unsignedInString.substr(unsignedInString.length - MT_DIGIT_LEN);
     }
     for(let i=0; i<unsignedInString.length/4; i++) {
       div4List.push(unsignedInString.substr(i * 4, 4));
     }
     let outString = "";
+    if(visibleUnitNum == 0) visibleUnitNum = unitNames.length;
     for(let i=0; i<div4List.length; i++) {
       div4List[i] = trimStartZero(div4List[i], i);
       if(div4List[i].length == 0) continue;
@@ -182,32 +186,48 @@
     if(useVariableIds.contains(variableId)) {
       value = bigInt(value);
       try {
-          var oldValue = $gameVariables.value(variableId);
-          switch (operationType) {
-          case 0:  // Set
-              $gameVariables.setValue(variableId, oldValue = value);
-              break;
-          case 1:  // Add
-              $gameVariables.setValue(variableId, oldValue.add(value));
-              break;
-          case 2:  // Sub
-              $gameVariables.setValue(variableId, oldValue.subtract(value));
-              break;
-          case 3:  // Mul
-              $gameVariables.setValue(variableId, oldValue.times(value));
-              break;
-          case 4:  // Div
-              $gameVariables.setValue(variableId, oldValue.divide(value));
-              break;
-          case 5:  // Mod
-              $gameVariables.setValue(variableId, oldValue.mod(value));
-              break;
-          }
+        let oldValue = $gameVariables.value(variableId);
+        switch (operationType) {
+          case 0: $gameVariables.setValue(variableId, oldValue = value);         break; // Set
+          case 1: $gameVariables.setValue(variableId, oldValue.add(value));      break; // Add
+          case 2: $gameVariables.setValue(variableId, oldValue.subtract(value)); break; // Sub
+          case 3: $gameVariables.setValue(variableId, oldValue.times(value));    break; // Mul
+          case 4: $gameVariables.setValue(variableId, oldValue.divide(value));   break; // Div
+          case 5: $gameVariables.setValue(variableId, oldValue.mod(value));      break; // Mod
+        }
       } catch (e) {
-          $gameVariables.setValue(variableId, bigInt(0));
+        $gameVariables.setValue(variableId, bigInt(0));
       }
     } else {
       _Game_Interpreter_operateVariable.call(this, variableId, operationType, value);
+    }
+  };
+
+  const _Game_Interpreter_command111 = Game_Interpreter.prototype.command111;
+  Game_Interpreter.prototype.command111 = function() { //Conditional Branch
+
+    if(this._params[0] == 1 && (useVariableIds.contains(this._params[1]) || useVariableIds.contains(this._params[3])) ) {
+      const value1 = bigInt($gameVariables.value(this._params[1]));
+      const value2 = this._params[2] === 0 ? this._params[3] : $gameVariables.value(this._params[3]);
+
+      let result = false;
+      switch (this._params[4]) {
+        case 0: result = value1.equals(value2);          break; // ==
+        case 1: result = value1.greaterOrEquals(value2); break; // >=
+        case 2: result = value1.lesserOrEquals(value2);  break; // <=
+        case 3: result = value1.greater(value2);         break; // >
+        case 4: result = value1.lesser(value2);          break; // <
+        case 5: result = value1.notEquals(value2);       break; // !=
+      }
+
+      this._branch[this._indent] = result;
+      if (this._branch[this._indent] === false) {
+        this.skipBranch();
+      }
+      return true;
+
+    } else {
+      return _Game_Interpreter_command111.call(this);
     }
   };
 
