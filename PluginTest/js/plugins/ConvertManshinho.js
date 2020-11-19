@@ -85,10 +85,10 @@
       div4List.push(unsignedInString.substr(i * 4, 4));
     }
     let outString = "";
-    if(visibleUnitNum == 0) visibleUnitNum = unitNames.length;
+    if(visibleUnitNum === 0) visibleUnitNum = unitNames.length;
     for(let i=0; i<div4List.length; i++) {
       div4List[i] = trimStartZero(div4List[i], i);
-      if(div4List[i].length == 0) continue;
+      if(div4List[i].length === 0) continue;
       if(div4List[i].length > 4) {
         div4List[i] = getExponentialString(div4List[i], mtDigitNum);
         const eNum = div4List[i].substr(div4List[i].indexOf("e")+1);
@@ -112,11 +112,11 @@
   const trimStartZero = function(str, i) {
     let zeroNum = 0;
     for(let i=0; i<str.length; i++) {
-      if(str.charAt(i) != "0") break;
+      if(str.charAt(i) !== "0") break;
       zeroNum++;
     }
     str = str.substr(zeroNum);
-    if(i == 0 && str.length == 0) str = "0";
+    if(i === 0 && str.length === 0) str = "0";
     return str;
   };
 
@@ -125,7 +125,7 @@
     let left = str.substr(0, digit);
     let right = str.substr(digit);
     let outString = left[0];
-    outString = outString + (digit == 1 ? "" : ".");
+    outString = outString + (digit === 1 ? "" : ".");
     outString = outString + left.substr(1) + "e" + (right.length+digit-1)
     return outString;
   };
@@ -207,7 +207,7 @@
   const _Game_Interpreter_command111 = Game_Interpreter.prototype.command111;
   Game_Interpreter.prototype.command111 = function() { //Conditional Branch
 
-    if(this._params[0] == 1 && (useVariableIds.contains(this._params[1]) || useVariableIds.contains(this._params[3])) ) {
+    if(this._params[0] === 1 && (useVariableIds.contains(this._params[1]) || useVariableIds.contains(this._params[3])) ) {
       const value1 = bigInt($gameVariables.value(this._params[1]));
       const value2 = this._params[2] === 0 ? this._params[3] : $gameVariables.value(this._params[3]);
 
@@ -255,11 +255,15 @@
   };
 
   // DTextPictureのリアルタイム更新対応 ----------------------------------------
-  if(Game_Screen.prototype.setDTextPicture != undefined) {
+  if(Game_Screen.prototype.setDTextPicture !== undefined) {
+    let isAddUsingVariables = false;
     const _Game_Screen_setDTextPicture = Game_Screen.prototype.setDTextPicture;
     Game_Screen.prototype.setDTextPicture = function(value, size) {
       _Game_Screen_setDTextPicture.call(this, value, size);
-      this.dUsingVariables = (this.dUsingVariables || []).concat(useVariableIds);
+      if(!isAddUsingVariables) {
+        this.dUsingVariables = (this.dUsingVariables || []).concat(useVariableIds);
+        isAddUsingVariables = true;
+      }
     };
   }
   // ---------------------------------------------------------------------------
