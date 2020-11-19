@@ -23,6 +23,7 @@
  * @default 3
  *
  * @help
+ * v1.4.1 セーブバグ修正。
  * v1.4.0 条件分岐に対応。
  * v1.3.4 0が表示されなくなっていたのを修正。
  * v1.3.3 セーブ処理修正。
@@ -237,9 +238,14 @@
   const _DataManager_makeSaveContents = DataManager.makeSaveContents;
   DataManager.makeSaveContents = function() {
     $gameVariables.bigIntToString();
-    const contents =  _DataManager_makeSaveContents.call(this);
+    return _DataManager_makeSaveContents.call(this);
+  };
+
+  const _DataManager_saveGameWithoutRescue = DataManager.saveGameWithoutRescue;
+  DataManager.saveGameWithoutRescue = function(savefileId) {
+    const result = _DataManager_saveGameWithoutRescue.call(this, savefileId);
     $gameVariables.parseBigInt();
-    return contents;
+    return result;
   };
 
   const _DataManager_extractSaveContents = DataManager.extractSaveContents;
