@@ -5,6 +5,8 @@
 ・マップシーンでアニメーションを再生する時の奥行きを制御します。  
 ・例えばキャラクターの奥側にアニメーションを再生させたい場合などに使用します。  
 
+![result](https://github.com/ste0/RPG-Marker-MV-Plugins/blob/main/PluginTest/gif/ChangeAnimationZ.gif)
+
 ### [ConvertManshinho.js](https://raw.githubusercontent.com/ste0/RPG-Marker-MV-Plugins/main/PluginTest/js/plugins/ConvertManshinho.js)
 ・変数の値を万進法で表示します。  
 ・例えば 1234005600002345 は 1234兆56億2345 と表示されます。  
