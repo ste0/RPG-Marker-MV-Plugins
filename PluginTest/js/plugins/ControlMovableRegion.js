@@ -1,6 +1,9 @@
 //=============================================================================
 // ControlMovableRegion.js
 //=============================================================================
+// Copyright (c) 2020 jp_asty
+// This software is released under the MIT License, see LICENSE.
+//=============================================================================
 
 /*:
  * @plugindesc ある領域を移動不可にする機能を追加します。
@@ -55,7 +58,7 @@
 
   Game_System.prototype.imMovableRegionId = function(id) {
     return this._imMovableRegionIds.contains(id);
-  }
+  };
 
   //-----------------------------------------------------------------------------
   // Game_CharacterBase
