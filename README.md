@@ -1,6 +1,9 @@
 ## RPG-Marker-MV-Plugins by jp_asty
 別サイトに上げていたプラグインを1箇所にまとめました。  
 
+### [SameRandomValues.js](https://raw.githubusercontent.com/ste0/RPG-Marker-MV-Plugins/main/PluginTest/js/plugins/SameRandomValues.js)
+・セーブからやり直しても同じ乱数を返すようになります。  
+
 ### [ChangeAnimationZ.js](https://raw.githubusercontent.com/ste0/RPG-Marker-MV-Plugins/main/PluginTest/js/plugins/ChangeAnimationZ.js)
 ・マップシーンでアニメーションを再生する時の奥行きを制御します。  
 ・例えばキャラクターの奥側にアニメーションを再生させたい場合などに使用します。  
