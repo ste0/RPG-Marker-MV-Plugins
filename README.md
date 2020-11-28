@@ -4,6 +4,9 @@
 ### [SameRandomValues.js](https://raw.githubusercontent.com/ste0/RPG-Marker-MV-Plugins/main/PluginTest/js/plugins/SameRandomValues.js)
 ・セーブからやり直しても同じ乱数を返すようになります。  
 
+### [ControlMovableRegion.js](https://raw.githubusercontent.com/ste0/RPG-Marker-MV-Plugins/main/PluginTest/js/plugins/ControlMovableRegion.js)
+・ある領域を移動不可にする機能を追加します。  
+
 ### [ChangeAnimationZ.js](https://raw.githubusercontent.com/ste0/RPG-Marker-MV-Plugins/main/PluginTest/js/plugins/ChangeAnimationZ.js)
 ・マップシーンでアニメーションを再生する時の奥行きを制御します。  
 ・例えばキャラクターの奥側にアニメーションを再生させたい場合などに使用します。  
